@@ -1,0 +1,19 @@
+
+* Introduction
+
+I was browsing my Spotify account and looking through a few of the
+artists that I follow. They have a good interface for seeing more
+articles like the ones you already like. However, as far as actions
+go, they dont' make it easy to go ahead and listen to a sampling of
+each of those artists. Instead, they just let you go to each related
+artist's profile.
+
+What I would like is just a simple way to:
+
+** Pick an artist
+
+Just pick on (either freeform or else pick from your list of followed artists)
+
+** Queue up or create a new playlist based of that the *seed artist's* related artists top songs
+
+
