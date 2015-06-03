@@ -61,8 +61,8 @@ def spotify_authorized():
         request.args.get('next')
     )
 
-@app.route('/playlists')
-def playlists():
+@app.route('/api/playlists')
+def api_playlists():
     resp = spotify.authorized_response()
     me = spotify.get('me')
     user_id = me.data['id']
