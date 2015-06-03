@@ -18,7 +18,7 @@ spotify = oauth.remote_app(
     # Change the scope to match whatever it us you need
     # list of scopes can be found in the url below
     # https://developer.spotify.com/web-api/using-scopes/
-    request_token_params={'scope': 'user-read-email'},
+    request_token_params={'scope': 'user-read-email playlist-read-private'},
     base_url='https://api.spotify.com/v1/',
     request_token_url=None,
     access_token_url='https://accounts.spotify.com/api/token',
@@ -61,6 +61,13 @@ def spotify_authorized():
         request.args.get('next')
     )
 
+@app.route('/playlists')
+def playlists():
+    resp = spotify.authorized_response()
+    me = spotify.get('me')
+    user_id = me.data['id']
+    playlists = spotify.get('users/{user_id}/playlists'.format(user_id=user_id))
+    return jsonify(playlists.data)
 
 @spotify.tokengetter
 def get_spotify_oauth_token():
