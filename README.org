@@ -5,7 +5,8 @@ artists that I follow. They have a good interface for seeing more
 articles like the ones you already like. However, as far as actions
 go, they dont' make it easy to go ahead and listen to a sampling of
 each of those artists. Instead, they just let you go to each related
-artist's profile.
+artist's profile. Granted, this isn't a [[http://stackoverflow.com/questions/19781876/spotify-api-create-temp-playlist-not-loading][novel idea]], but I still
+thought it was worthwhile to tackle.
 
 What I would like is just a simple way to:
 
@@ -14,5 +15,7 @@ Just pick on (either freeform or else pick from your list of followed artists)
 
 ** Queue up or create a new playlist based of that the *seed artist's* related artists top songs
 
-** TODO Get user's followed artists to use as possible seeds
-** TODO Oauth to get access to user's playlists to add
+** DONE Get user's followed artists to use as possible seeds
+** DONE Oauth to get access to user's playlists to add
+** TODO Look into caching solutions
+*** TODO Check to see if Heroku supports something like redis

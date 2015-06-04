@@ -1,10 +1,23 @@
 {% extends "base.html" %}
 
 {% block body %}
-<h1>Tracks</h1>
+<h1>Tracks - {{ artist_name }}</h1>
 <ul>
   {% for track in tracks %}
   <li>{{ track['name'] }} from {{ track['artists'][0]['name']}}</li>
   {% endfor %}
 </ul>
+
+<form method='post' action='/playlists/new'>
+  <p>Playlist name: 
+    <input type='text' name='playlist_name' value="{{ 'Related tracks of ' + artist_name }}">
+  </p>
+  <p>Make playlist public?	 
+    <input type='radio' name='public' value='True'> Yes
+    <input type='radio' name='public' value='False' checked> No
+  </p>
+  <input type='hidden' name='track_uris' value="{{ track_uri_str }}">
+  <input type='submit' value='Create'>
+	 
+</form>
 {% endblock %}

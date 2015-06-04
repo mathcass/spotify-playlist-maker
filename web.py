@@ -1,6 +1,9 @@
 from flask import Flask, redirect, url_for, session, request, jsonify, render_template
 from flask_oauthlib.client import OAuth, OAuthException
 
+import simplejson as json
+
+
 SPOTIFY_APP_ID = '13b35efe8dcb4d2aa56d9e3ebf97e90c'
 SPOTIFY_APP_SECRET = 'a441c68707d04cc691d4ca1888cda585'
 SECRET_KEY = ''
@@ -13,7 +16,7 @@ spotify = oauth.remote_app(
     consumer_key=SPOTIFY_APP_ID,
     consumer_secret=SPOTIFY_APP_SECRET,
     # https://developer.spotify.com/web-api/using-scopes/
-    request_token_params={'scope': 'playlist-read-private user-read-private'},
+    request_token_params={'scope': 'playlist-read-private user-read-private playlist-modify-private playlist-modify-public'},
     base_url='https://api.spotify.com/v1/',
     request_token_url=None,
     access_token_url='https://accounts.spotify.com/api/token',
@@ -97,12 +100,21 @@ def related_tracks(artist_id):
     """Given an artist_id, gets related artists, then
     their top tracks
     """
+    resp = spotify.get('artists/{0}'.format(artist_id))
+    artist_name = resp.data['name']
     artists = get_related_artists(artist_id)
     track_collection = []
+    track_uris = []
     for artist in artists:
-        tracks = get_top_tracks(artist['id'])
-        track_collection.extend(tracks[:3])
-    return render_template('tracks.html', tracks=track_collection)
+        tracks = get_top_tracks(artist['id'])[:3]
+        track_collection.extend(tracks)
+        track_uris.extend([track['uri'] for track in tracks])
+    
+    track_uri_str = ','.join(track_uris)
+    return render_template('tracks.html',
+                           tracks=track_collection,
+                           track_uri_str=track_uri_str,
+                           artist_name=artist_name)
 
 @app.route('/playlists/new', methods=['POST'])
 def new_playlist():
@@ -110,16 +122,27 @@ def new_playlist():
     creates a new playlist based off of this artists
     related artists
     """
-    artist_id = request.form['artist_id']
-    return redirect(url_for('index'))
+    playlist_name = request.form['playlist_name']
+    public = request.form['public']
+    track_uris = request.form['track_uris'].split(',')
+    new_playlist_data = {
+        'name': playlist_name,
+        'public': public
+    }
 
-@app.route('/api/playlists')
-def api_playlists():
-    resp = spotify.authorized_response()
-    me = spotify.get('me')
-    user_id = me.data['id']
-    playlists = spotify.get('users/{user_id}/playlists'.format(user_id=user_id))
-    return jsonify(playlists.data)
+    user_id = session.get('user_id')
+    resp = spotify.post('users/{0}/playlists'.format(user_id),
+                        data=new_playlist_data,
+                        format='json')
+    if str(resp.status).startswith('2'):
+        href = resp.data['href'] 
+        href += '/tracks' # to add new tracks
+        resp = spotify.post(href,
+                            data={'uris': track_uris},
+                            format='json')
+        print(resp.data)
+        return redirect(url_for('playlists'))
+    return redirect(url_for('artist'))
 
 @spotify.tokengetter
 def get_spotify_oauth_token():
