@@ -78,10 +78,11 @@ def artist():
     user_id = session.get('user_id')
     if not user_id:
         return redirect(url_for('login'))
+    q = request.args.get('q', 'pitbull')
     get_data = {
         'market': 'from_token',
         'type': 'artist',
-        'q': 'pitbull',
+        'q': q,
     }
     resp = spotify.get('search/', data=get_data)
     artists = resp.data['artists']['items']

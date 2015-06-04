@@ -22,3 +22,5 @@ Just pick on (either freeform or else pick from your list of followed artists)
 ** TODO Remove sensitive configs from file and put into environment
 ** TODO Look over routes for potential refactoring
 ** TODO Make UI look a bit better (bootstrap?)  
+** TODO It's possible for spotify to kill your auth token while the app still has one stored in the session
+   make sure that we check the token periodically so that we can refresh and go to the login page if needed
