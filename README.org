@@ -19,3 +19,6 @@ Just pick on (either freeform or else pick from your list of followed artists)
 ** DONE Oauth to get access to user's playlists to add
 ** TODO Look into caching solutions
 *** TODO Check to see if Heroku supports something like redis
+** TODO Remove sensitive configs from file and put into environment
+** TODO Look over routes for potential refactoring
+** TODO Make UI look a bit better (bootstrap?)  
