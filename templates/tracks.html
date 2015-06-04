@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h1>Tracks</h1>
+<ul>
+  {% for track in tracks %}
+  <li>{{ track['name'] }} from {{ track['artists'][0]['name']}}</li>
+  {% endfor %}
+</ul>
+{% endblock %}

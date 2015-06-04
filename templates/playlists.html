@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h1>Current Playlists</h1>
+<ul>
+  {% for playlist in playlists %}
+  <li>{{ playlist['name'] }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}
