@@ -1,22 +1,35 @@
-from flask import Flask, redirect, url_for, session, request, jsonify, render_template
+import os, time
+from functools import wraps
+
+from flask import (Flask, redirect, url_for, session, 
+                   request, jsonify, render_template,
+                   current_app)
 from flask_oauthlib.client import OAuth, OAuthException
 
 import simplejson as json
 
-
-SPOTIFY_APP_ID = '13b35efe8dcb4d2aa56d9e3ebf97e90c'
-SPOTIFY_APP_SECRET = 'a441c68707d04cc691d4ca1888cda585'
-SECRET_KEY = ''
+SPOTIFY_APP_ID = os.environ.get('SPOTIFY_APP_ID')
+SPOTIFY_APP_SECRET = os.environ.get('SPOTIFY_APP_SECRET')
+SECRET_KEY = os.environ.get('SPOTIFY_KEY')
 
 app = Flask(__name__)
+app.secret_key = SECRET_KEY
 oauth = OAuth(app)
+
+spotify_scopes = [
+    'playlist-read-private',
+    'user-read-private',
+    'playlist-modify-private',
+    'playlist-modify-public',
+]
+spotify_scope_str = ' '.join(spotify_scopes)
 
 spotify = oauth.remote_app(
     'spotify',
     consumer_key=SPOTIFY_APP_ID,
     consumer_secret=SPOTIFY_APP_SECRET,
     # https://developer.spotify.com/web-api/using-scopes/
-    request_token_params={'scope': 'playlist-read-private user-read-private playlist-modify-private playlist-modify-public'},
+    request_token_params={'scope': spotify_scope_str},
     base_url='https://api.spotify.com/v1/',
     request_token_url=None,
     access_token_url='https://accounts.spotify.com/api/token',
@@ -24,19 +37,34 @@ spotify = oauth.remote_app(
     content_type='application/json',
 )
 
+@spotify.tokengetter
+def get_spotify_oauth_token():
+    return session.get('oauth_token')
 
+@app.before_request
+def before_request():
+    """Ensure user is logged in before each request
+    """
+    oauth_token = session.get('oauth_token')
+    expire = session.get('expire')
+    this_request_url = str(request.url)
+    if '/login' in this_request_url:
+        # Fragile: need to keep track of what urls exist
+        pass
+    elif not oauth_token:
+        return redirect(url_for('login'))
+    elif expire < time.time():
+        return redirect(url_for('login'))
+
+"""
+Routes
+"""
+    
 @app.route('/')
 def index():
     if not session.get('oauth_token'):
         return redirect(url_for('login'))
-
-    me = spotify.get('me')
-    msg = "Authenticated as {} and email {}".format(me.data['id'], me.data['email'])
     return render_template('home.html')
-
-@app.route('/session')
-def session_test():
-    return str(session.get('oauth_token'))
 
 @app.route('/login')
 def login():
@@ -46,7 +74,6 @@ def login():
         _external=True
     )
     return spotify.authorize(callback=callback)
-
 
 @app.route('/login/authorized')
 def spotify_authorized():
@@ -62,22 +89,18 @@ def spotify_authorized():
     session['oauth_token'] = (resp['access_token'], '')
     me = spotify.get('me')
     session['user_id']= me.data['id']
+    session['expire'] = time.time() + 3500 # roughly 1 hour
     return redirect(url_for('index'))
 
 @app.route('/playlists')
 def playlists():
     user_id = session.get('user_id')
-    if not user_id:
-        return redirect(url_for('login'))
     resp = spotify.get('users/{user_id}/playlists'.format(user_id=user_id))
     playlists = resp.data['items']
     return render_template('playlists.html', playlists=playlists)
 
 @app.route('/artists')
-def artist():
-    user_id = session.get('user_id')
-    if not user_id:
-        return redirect(url_for('login'))
+def artists():
     q = request.args.get('q', 'pitbull')
     get_data = {
         'market': 'from_token',
@@ -103,10 +126,10 @@ def related_tracks(artist_id):
     """
     resp = spotify.get('artists/{0}'.format(artist_id))
     artist_name = resp.data['name']
-    artists = get_related_artists(artist_id)
+    related_artists = get_related_artists(artist_id)
     track_collection = []
     track_uris = []
-    for artist in artists:
+    for artist in related_artists:
         tracks = get_top_tracks(artist['id'])[:3]
         track_collection.extend(tracks)
         track_uris.extend([track['uri'] for track in tracks])
@@ -143,12 +166,7 @@ def new_playlist():
                             format='json')
         print(resp.data)
         return redirect(url_for('playlists'))
-    return redirect(url_for('artist'))
-
-@spotify.tokengetter
-def get_spotify_oauth_token():
-    return session.get('oauth_token')
-
+    return redirect(url_for('artists'))
 
 def get_related_artists(artist_id):
     """Given the artist_id, gets related ones
@@ -168,5 +186,4 @@ def get_top_tracks(artist_id):
 
 if __name__ == '__main__':
     app.debug = True
-    app.secret_key = 'development'
     app.run()
