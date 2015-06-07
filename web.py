@@ -5,6 +5,7 @@ from flask import (Flask, redirect, url_for, session,
                    request, jsonify, render_template,
                    current_app)
 from flask_oauthlib.client import OAuth, OAuthException
+from flask_sslify import SSLify
 
 import simplejson as json
 
@@ -15,6 +16,7 @@ SECRET_KEY = os.environ.get('SPOTIFY_KEY')
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
 oauth = OAuth(app)
+sslify = SSLify(app)
 
 spotify_scopes = [
     'playlist-read-private',
