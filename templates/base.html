@@ -10,7 +10,13 @@
   <body>
     {% block body %}
     {% endblock %}
+    
+    {% if session['user_id'] %}
     <p>Currently logged in as {{ session['user_id'] }}</p>
+    {% else %}
+    <p>Not currently logged in. <a href="{{ url_for('login') }}">Log in to Spotify</a> to create playlists</p>
+    {% endif %}
+    
     {% include 'menu.html' %}
   </body>
 </html>

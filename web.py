@@ -43,20 +43,17 @@ spotify = oauth.remote_app(
 def get_spotify_oauth_token():
     return session.get('oauth_token')
 
-@app.before_request
-def before_request():
-    """Ensure user is logged in before each request
-    """
-    oauth_token = session.get('oauth_token')
-    expire = session.get('expire')
-    this_request_url = str(request.url)
-    if '/login' in this_request_url:
-        # Fragile: need to keep track of what urls exist
-        pass
-    elif not oauth_token:
-        return redirect(url_for('login'))
-    elif expire < time.time():
-        return redirect(url_for('login'))
+def requires_login(f):
+      @wraps(f)
+      def decorated_function(*args, **kwargs):
+          oauth_token = session.get('oauth_token')
+          expire = session.get('expire')
+          if not oauth_token:
+              return redirect(url_for('login'))
+          elif expire < time.time():
+              return redirect(url_for('login'))
+          return f(*args, **kwargs)
+      return decorated_function
 
 """
 Routes
@@ -64,15 +61,13 @@ Routes
     
 @app.route('/')
 def index():
-    if not session.get('oauth_token'):
-        return redirect(url_for('login'))
     return render_template('home.html')
 
 @app.route('/login')
 def login():
     callback = url_for(
         'spotify_authorized',
-        next=request.args.get('next') or request.referrer or None,
+        next=request.args.get('next') or None,
         _external=True
     )
     return spotify.authorize(callback=callback)
@@ -95,6 +90,7 @@ def spotify_authorized():
     return redirect(url_for('index'))
 
 @app.route('/playlists')
+@requires_login
 def playlists():
     user_id = session.get('user_id')
     resp = spotify.get('users/{user_id}/playlists'.format(user_id=user_id))
@@ -109,9 +105,12 @@ def artists():
         'type': 'artist',
         'q': q,
     }
-    resp = spotify.get('search/', data=get_data)
-    artists = resp.data['artists']['items']
-    return render_template('artists.html', artists=artists)
+    if q:
+        resp = spotify.get('search/', data=get_data)
+        artists = resp.data['artists']['items']
+    else:
+        artists = []
+    return render_template('artists.html', artists=artists, q=q)
 
 @app.route('/artists/related/<artist_id>')
 def related_artists(artist_id):
