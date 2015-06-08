@@ -2,8 +2,7 @@ import os, time
 from functools import wraps
 
 from flask import (Flask, redirect, url_for, session, 
-                   request, jsonify, render_template,
-                   current_app)
+                   request, render_template)
 from flask_oauthlib.client import OAuth, OAuthException
 from flask_sslify import SSLify
 
@@ -98,6 +97,7 @@ def playlists():
     return render_template('playlists.html', playlists=playlists)
 
 @app.route('/artists')
+@requires_login
 def artists():
     q = request.args.get('q', 'pitbull')
     get_data = {
@@ -113,6 +113,7 @@ def artists():
     return render_template('artists.html', artists=artists, q=q)
 
 @app.route('/artists/related/<artist_id>')
+@requires_login
 def related_artists(artist_id):
     """Returns the list of related artists to the given 
     artist_id
@@ -121,6 +122,7 @@ def related_artists(artist_id):
     return render_template('artists.html', artists=artists)
 
 @app.route('/artists/related-tracks/<artist_id>')
+@requires_login
 def related_tracks(artist_id):
     """Given an artist_id, gets related artists, then
     their top tracks
@@ -142,6 +144,7 @@ def related_tracks(artist_id):
                            artist_name=artist_name)
 
 @app.route('/playlists/new', methods=['POST'])
+@requires_login
 def new_playlist():
     """Given POST data of artist_id
     creates a new playlist based off of this artists
