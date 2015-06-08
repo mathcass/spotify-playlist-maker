@@ -14,7 +14,9 @@ authenticate your users (and access their resources). This application
 expects the following as environment resources:
 
 SPOTIFY_APP_ID
+
 SPOTIFY_APP_SECRET
+
 SPOTIFY_KEY
 
 * Deploying
