@@ -1,22 +1,28 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <title>Spotify Track Suggester</title>
     <style>
       input[type="text"] {
-        width: 300px;
+      width: 300px;
       }
     </style>
+
+    <!-- <\!-- Latest compiled and minified CSS -\-> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
   </head>
   <body>
-    {% block body %}
-    {% endblock %}
-    
-    {% if session['user_id'] %}
-    <p>Currently logged in as {{ session['user_id'] }}</p>
-    {% else %}
-    <p>Not currently logged in. <a href="{{ url_for('login') }}">Log in to Spotify</a> to create playlists</p>
-    {% endif %}
-    
-    {% include 'menu.html' %}
+    <div class="container">
+      {% block body %}
+      {% endblock %}
+      
+      {% if session['user_id'] %}
+      <p>Currently logged in as {{ session['user_id'] }}</p>
+      {% else %}
+      <p>Not currently logged in. <a href="{{ url_for('login') }}">Log in to Spotify</a> to create playlists</p>
+      {% endif %}
+      
+      {% include 'menu.html' %}
+    </div> <!-- end container -->
   </body>
 </html>

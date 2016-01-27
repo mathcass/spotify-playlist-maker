@@ -3,12 +3,13 @@
 {% block body %}
 <h1>Artists</h1>
 <form method='get' action='/artists'>
-  <p>Query: 
-    <input type='text' name='q' value="{{ q }}">
-  </p>
-  <input type='submit' value='search'>
+  <div class="form-group">
+    <label>Artist Name
+      <input class="form-control" type='text' name='q' value="{{ q }}">
+    </label>
+  </div>
+  <button type='submit' value='search' class="btn btn-default">Search</button>
 </form>
-
 <ul>
   {% for artist in artists %}
   <li><a href="{{ url_for('related_artists', artist_id=artist['id']) }}">{{ artist['name'] }}</a> - <a href="{{ url_for('related_tracks', artist_id=artist['id']) }}">see related tracks</a></li>
