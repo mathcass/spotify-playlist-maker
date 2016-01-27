@@ -1,23 +1,25 @@
 
 * Introduction
-I was browsing my Spotify account and looking through a few of the
-artists that I follow. They have a good interface for seeing more
-articles like the ones you already like. However, as far as actions
-go, they dont' make it easy to go ahead and listen to a sampling of
-each of those artists. Instead, they just let you go to each related
-artist's profile. Granted, this isn't a [[http://stackoverflow.com/questions/19781876/spotify-api-create-temp-playlist-not-loading][novel idea]], but I still
-thought it was worthwhile to tackle.
+I was browsing my Spotify account and looking through a few of the artists that
+I follow. They have a good interface for seeing more artists like the ones you
+already like. However, as far as actions go, it isn't easy to go ahead and
+listen to a sampling of each of those artists. Instead, they just let you go to
+each related artist's profile.
+
+This simple application accepts an artist, gets all of the related artists, then
+generates a playlist from their top tracks. Granted, this isn't a [[http://stackoverflow.com/questions/19781876/spotify-api-create-temp-playlist-not-loading][novel idea]],
+but I still thought it was worthwhile to tackle.
 
 * Setting up
 To run locally, you'll need to create a new [[https://developer.spotify.com/my-applications/][Spotify application]] to
 authenticate your users (and access their resources). This application
 expects the following as environment resources:
 
-SPOTIFY_APP_ID
+~SPOTIFY_APP_ID~
 
-SPOTIFY_APP_SECRET
+~SPOTIFY_APP_SECRET~
 
-SPOTIFY_KEY
+~SPOTIFY_KEY~
 
 * Deploying
 To deploy, clone to Heroku and set the appropriate environment
