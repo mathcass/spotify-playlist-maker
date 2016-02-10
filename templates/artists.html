@@ -2,13 +2,16 @@
 
 {% block body %}
 <h1>Artists</h1>
-<form method='get' action='/artists'>
+<form class="row container-fluid form-horizontal">
   <div class="form-group">
-    <label>Artist Name
-      <input class="form-control" type='text' name='q' value="{{ q }}">
-    </label>
+    <label for="inputArtist" class="col-xs-2 col-md-2 control-label">Artist</label>
+    <div class="col-xs-8 col-md-8">
+      <input type="text" class="form-control" name="q" value="{{ q }}" id="inputArtist" placeholder="Pitbull">
+    </div>
+    <div class="col-xs-2 col-md-2">
+      <button type="submit" value="search" class="btn btn-default">Search</button>
+    </div>
   </div>
-  <button type='submit' value='search' class="btn btn-default">Search</button>
 </form>
 <ul>
   {% for artist in artists %}
