@@ -10,19 +10,15 @@
 <p><strong>First</strong>, authenticate your Spotify account.</p>
 <p><strong>Then</strong>, search for an artist and click <em>see related tracks</em>. Save it.</p>
 
-<form class="row container-fluid form-horizontal" action="artists" method="get">
-  <div class="form-group">
-    <label for="inputArtist" class="col-xs-2 col-md-2 control-label">Artist</label>
-    <div class="col-xs-8 col-md-8">
-      <input type="text" class="form-control" name="q" value="Pitbull" id="inputArtist" placeholder="Pitbull">
-    </div>
-    <div class="col-xs-2 col-md-2">
-      <button type="submit" value="search" class="btn btn-default">Search</button>
-    </div>
-  </div>
-</form>
-
 <p><strong>Finally</strong>, rock out to your new playlist.</p>
 
 <p><strong>Please</strong> report any issues you see to <a href="https://github.com/mathcass/spotify-playlist-maker/issues">Github</a>.</p>
+
+<form>
+    <div class="form-group">
+        <label for="inputArtist">Artist</label>
+        <input type="text" class="form-control" name="q" value="{{ q }}" id="inputArtist" placeholder="Pitbull">
+    </div>
+    <button type="submit" value="search" class="btn btn-default">Search</button>
+</form>
 {% endblock %}

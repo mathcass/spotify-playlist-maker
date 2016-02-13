@@ -1,21 +1,18 @@
 {% extends "base.html" %}
 
 {% block body %}
-<h1>Artists</h1>
-<form class="row container-fluid form-horizontal">
-  <div class="form-group">
-    <label for="inputArtist" class="col-xs-2 col-md-2 control-label">Artist</label>
-    <div class="col-xs-8 col-md-8">
-      <input type="text" class="form-control" name="q" value="{{ q }}" id="inputArtist" placeholder="Pitbull">
+<h1>Artist search</h1>
+<form>
+    <div class="form-group">
+        <label for="inputArtist">Artist</label>
+        <input type="text" class="form-control" name="q" value="{{ q }}" id="inputArtist" placeholder="Pitbull">
     </div>
-    <div class="col-xs-2 col-md-2">
-      <button type="submit" value="search" class="btn btn-default">Search</button>
-    </div>
-  </div>
+    <button type="submit" value="search" class="btn btn-default">Search</button>
 </form>
+<br/>
 <ul>
-  {% for artist in artists %}
-  <li><a href="{{ url_for('related_artists', artist_id=artist['id']) }}">{{ artist['name'] }}</a> - <a href="{{ url_for('related_tracks', artist_id=artist['id']) }}">see related tracks</a></li>
-  {% endfor %}
+    {% for artist in artists %}
+    <li><a href="{{ url_for('related_artists', artist_id=artist['id']) }}">{{ artist['name'] }}</a> - <a href="{{ url_for('related_tracks', artist_id=artist['id']) }}">see related tracks</a></li>
+    {% endfor %}
 </ul>
 {% endblock %}
