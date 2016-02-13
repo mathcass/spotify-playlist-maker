@@ -3,20 +3,30 @@
 {% block body %}
 <h1>Tracks - {{ artist_name }}</h1>
 <ul>
-  {% for track in tracks %}
-  <li>{{ track['name'] }} from {{ track['artists'][0]['name']}}</li>
-  {% endfor %}
+    {% for track in tracks %}
+    <li>{{ track['name'] }} from {{ track['artists'][0]['name']}}</li>
+    {% endfor %}
 </ul>
 
+<h2>Save your playlist</h2>
 <form method='post' action='/playlists/new'>
-  <p>Playlist name: 
-    <input type='text' name='playlist_name' value="{{ 'Related tracks of ' + artist_name }}">
-  </p>
-  <p>Make playlist public?	 
-    <input type='radio' name='public' value='True'> Yes
-    <input type='radio' name='public' value='False' checked> No
-  </p>
-  <input type='hidden' name='track_uris' value="{{ track_uri_str }}">
-  <input type='submit' value='Create'>
+    <div class="form-group">
+        <label for="playlist_name">Name:</label>
+        <input class="form-control" type='text' name='playlist_name' value="{{ 'Related tracks of ' + artist_name }}">
+    </div>
+    <div class="form-group">
+        <label>Make public?</label>
+        <label>
+            <input type='radio' name='public' value='True'> Yes
+        </label>
+        <label>
+            <input type='radio' name='public' value='False' checked> No
+        </label>
+    </div>
+
+    <div class="form-group">
+        <input type='hidden' name='track_uris' value="{{ track_uri_str }}">
+        <button type="submit" class="btn btn-default">Create</button>
+    </div>
 </form>
 {% endblock %}
