@@ -138,8 +138,12 @@ def related_tracks(artist_id):
     resp = spotify.get('artists/{0}'.format(artist_id))
     artist_name = resp.data['name']
     related_artists = get_related_artists(artist_id)
-    track_collection = []
-    track_uris = []
+
+    selected_artist_tracks = get_top_tracks(artist_id)
+
+    track_collection = selected_artist_tracks[:3]
+    track_uris = [track['uri'] for track in track_collection]
+
     for artist in related_artists:
         tracks = get_top_tracks(artist['id'])[:3]
         track_collection.extend(tracks)
