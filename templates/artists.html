@@ -2,13 +2,9 @@
 
 {% block body %}
 <h1>Artist search</h1>
-<form>
-    <div class="form-group">
-        <label for="inputArtist">Artist</label>
-        <input type="text" class="form-control" name="q" value="{{ q }}" id="inputArtist" placeholder="Pitbull">
-    </div>
-    <button type="submit" value="search" class="btn btn-default">Search</button>
-</form>
+
+{% include "artist_form.html" %}
+
 <br/>
 <ul>
     {% for artist in artists %}

@@ -14,11 +14,6 @@
 
 <p><strong>Please</strong> report any issues you see to <a href="https://github.com/mathcass/spotify-playlist-maker/issues">Github</a>.</p>
 
-<form>
-    <div class="form-group">
-        <label for="inputArtist">Artist</label>
-        <input type="text" class="form-control" name="q" value="{{ q }}" id="inputArtist" placeholder="Pitbull">
-    </div>
-    <button type="submit" value="search" class="btn btn-default">Search</button>
-</form>
+{% include "artist_form.html" %}
+
 {% endblock %}

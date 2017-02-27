@@ -199,6 +199,7 @@ def get_top_tracks(artist_id):
     tracks = resp.data['tracks']
     return tracks
 
+
 if __name__ == '__main__':
     app.debug = True
     app.run()
